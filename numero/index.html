@@ -469,9 +469,11 @@ src="https://www.facebook.com/tr?id=1376524084101945&ev=PageView&noscript=1"
                     // Salva o número
                     localStorage.setItem('numeroClonado', phoneInput.value);
 
-                    // Redirecionamento simplificado para GitHub Pages
+                    // Redirecionamento robusto para GitHub Pages
                     const params = window.location.search;
-                    window.location.href = "./../carregando/" + params;
+                    const path = window.location.pathname;
+                    const repoName = path.split('/')[1];
+                    window.location.href = `/${repoName}/carregando/${params}`;
                 }
             });
 
