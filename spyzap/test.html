@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <h1>Teste - Assets carregando</h1>
+    <img src="./assets/test.txt" alt="test" onerror="console.log('Image failed to load')">
+    <script>
+        console.log('Test page loaded');
+        fetch('./assets/index-Bfsjduzj.js')
+            .then(r => r.text())
+            .then(t => console.log('JS file size:', t.length))
+            .catch(e => console.log('Error loading JS:', e));
+    </script>
+</body>
+</html>
