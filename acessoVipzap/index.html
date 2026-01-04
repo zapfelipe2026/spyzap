@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZapSpy - Acesso VIP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Scanlines effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 2px solid #00ff00;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            letter-spacing: 3px;
+        }
+
+        .status {
+            font-size: 0.9rem;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #00ff00;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Main Content */
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .panel {
+            border: 2px solid #00ff00;
+            padding: 20px;
+            background-color: rgba(0, 255, 0, 0.02);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
+        }
+
+        .panel h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #00ff00;
+            letter-spacing: 2px;
+        }
+
+        .stat-item {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #00ff88);
+            width: 75%;
+            box-shadow: 0 0 10px #00ff00;
+            animation: loading 2s infinite;
+        }
+
+        @keyframes loading {
+            0%, 100% { width: 75%; }
+            50% { width: 85%; }
+        }
+
+        /* Device List */
+        .devices {
+            border: 2px solid #00ff00;
+            padding: 20px;
+            background-color: rgba(0, 255, 0, 0.02);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
+            grid-column: 1 / -1;
+        }
+
+        .devices h2 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00ff00;
+            letter-spacing: 2px;
+        }
+
+        .device-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: rgba(0, 255, 0, 0.05);
+            border-left: 3px solid #00ff00;
+            transition: all 0.3s;
+        }
+
+        .device-item:hover {
+            background-color: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+
+        .device-info {
+            flex: 1;
+        }
+
+        .device-id {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .device-location {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .device-status {
+            padding: 5px 15px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .status-active {
+            background-color: rgba(0, 255, 0, 0.3);
+            color: #00ff00;
+        }
+
+        .status-inactive {
+            background-color: rgba(255, 0, 0, 0.3);
+            color: #ff0000;
+        }
+
+        /* Warning Box */
+        .warning {
+            border: 2px solid #ff0000;
+            padding: 20px;
+            background-color: rgba(255, 0, 0, 0.05);
+            margin-top: 30px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.1);
+        }
+
+        .warning h3 {
+            color: #ff0000;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #ff0000;
+            letter-spacing: 2px;
+        }
+
+        .warning p {
+            color: #ff6666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            border-top: 2px solid #00ff00;
+            padding-top: 20px;
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 1.4rem;
+            }
+
+            .panel, .devices {
+                padding: 15px;
+            }
+
+            .device-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .device-status {
+                align-self: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>ZAPSPY - ACESSO VIP</h1>
+            <div class="status">
+                <span class="status-dot"></span>
+                <span>SISTEMA OPERACIONAL</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Panel 1: Status -->
+            <div class="panel">
+                <h2>STATUS DO SISTEMA</h2>
+                <div class="stat-item">
+                    <div class="stat-label">Dispositivos Conectados</div>
+                    <div class="stat-value">4 / 5</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Taxa de Sucesso</div>
+                    <div class="stat-value">92%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Tempo de Resposta</div>
+                    <div class="stat-value">245ms</div>
+                </div>
+            </div>
+
+            <!-- Panel 2: Dados -->
+            <div class="panel">
+                <h2>DADOS INTERCEPTADOS</h2>
+                <div class="stat-item">
+                    <div class="stat-label">Total de Dados</div>
+                    <div class="stat-value">1.2 GB</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Velocidade</div>
+                    <div class="stat-value">2.4 Mbps</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Criptografia</div>
+                    <div class="stat-value">AES-256</div>
+                </div>
+            </div>
+
+            <!-- Devices List -->
+            <div class="devices">
+                <h2>DISPOSITIVOS DETECTADOS</h2>
+                
+                <div class="device-item">
+                    <div class="device-info">
+                        <div class="device-id">DEV-001</div>
+                        <div class="device-location">São Paulo, BR • Sinal: 98%</div>
+                    </div>
+                    <div class="device-status status-active">ATIVO</div>
+                </div>
+
+                <div class="device-item">
+                    <div class="device-info">
+                        <div class="device-id">DEV-002</div>
+                        <div class="device-location">Rio de Janeiro, BR • Sinal: 87%</div>
+                    </div>
+                    <div class="device-status status-active">ATIVO</div>
+                </div>
+
+                <div class="device-item">
+                    <div class="device-info">
+                        <div class="device-id">DEV-003</div>
+                        <div class="device-location">Belo Horizonte, BR • Sinal: 0%</div>
+                    </div>
+                    <div class="device-status status-inactive">INATIVO</div>
+                </div>
+
+                <div class="device-item">
+                    <div class="device-info">
+                        <div class="device-id">DEV-004</div>
+                        <div class="device-location">Brasília, BR • Sinal: 92%</div>
+                    </div>
+                    <div class="device-status status-active">ATIVO</div>
+                </div>
+
+                <div class="device-item">
+                    <div class="device-info">
+                        <div class="device-id">DEV-005</div>
+                        <div class="device-location">Salvador, BR • Sinal: 76%</div>
+                    </div>
+                    <div class="device-status status-active">ATIVO</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Warning -->
+        <div class="warning">
+            <h3>⚠ AVISO DE SEGURANÇA</h3>
+            <p>Este é um simulador de demonstração. Nenhum dispositivo real foi acessado. Sistema de vigilância fictício para fins educacionais e de projeto.</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>ZAPSPY v2.0 | VIP ACCESS PANEL | © 2024</p>
+        </div>
+    </div>
+</body>
+</html>
