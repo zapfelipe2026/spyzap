@@ -469,21 +469,9 @@ src="https://www.facebook.com/tr?id=1376524084101945&ev=PageView&noscript=1"
                     // Salva o número
                     localStorage.setItem('numeroClonado', phoneInput.value);
 
-                    // Pega a URL atual e seus parâmetros
-                    const currentUrl = new URL(window.location.href);
-                    const params = currentUrl.searchParams;
-
-                    // Cria o link de destino (ajuste se a pasta mudar)
-                    // Como você configurou a raiz como /funil-zapspy, use /carregando/
-                    const redirectUrl = new URL('../carregando/', currentUrl.href);
-
-                    // Transfere os UTMs (source, medium, campaign, etc)
-                    params.forEach((value, key) => {
-                        redirectUrl.searchParams.append(key, value);
-                    });
-
-                    // Vai para a próxima página
-                    window.location.href = redirectUrl.toString();
+                    // Redirecionamento simplificado para GitHub Pages
+                    const params = window.location.search;
+                    window.location.href = "../carregando/" + params;
                 }
             });
 

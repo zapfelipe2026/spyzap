@@ -762,14 +762,8 @@ src="https://www.facebook.com/tr?id=1376524084101945&ev=PageView&noscript=1"
         });
 
        function redirectToReport() {
-    // Pegando a URL atual corretamente
-    const currentUrl = new URL(window.location.href);
-    
-    // Pegando os parâmetros (utm, etc)
-    const params = currentUrl.search;
-    
-    // Mandando apenas para a pasta relatorio
-    window.location.href = `../relatorio/${params}`;
+    const params = window.location.search;
+    window.location.href = "../relatorio/" + params;
 }
 
         // Função para formatar número brasileiro
