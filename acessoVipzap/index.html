@@ -211,26 +211,33 @@
             color: #ff0000;
         }
 
-        /* Warning Box */
-        .warning {
-            border: 2px solid #ff0000;
-            padding: 20px;
-            background-color: rgba(255, 0, 0, 0.05);
+        /* Access Button */
+        .access-button {
+            display: inline-block;
             margin-top: 30px;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.1);
-        }
-
-        .warning h3 {
-            color: #ff0000;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px #ff0000;
+            padding: 15px 40px;
+            background-color: #00ff00;
+            color: #000000;
+            border: 2px solid #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
             letter-spacing: 2px;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            text-shadow: none;
         }
 
-        .warning p {
-            color: #ff6666;
-            font-size: 0.95rem;
-            line-height: 1.6;
+        .access-button:hover {
+            background-color: #00ff88;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+            transform: scale(1.05);
+        }
+
+        .access-button:active {
+            transform: scale(0.98);
         }
 
         /* Footer */
@@ -372,10 +379,9 @@
             </div>
         </div>
 
-        <!-- Warning -->
-        <div class="warning">
-            <h3>⚠ AVISO DE SEGURANÇA</h3>
-            <p>Este é um simulador de demonstração. Nenhum dispositivo real foi acessado. Sistema de vigilância fictício para fins educacionais e de projeto.</p>
+        <!-- Access Button -->
+        <div style="text-align: center;">
+            <a href="../acessovipzap2/" class="access-button">FAÇA SEU ACESSO</a>
         </div>
 
         <!-- Footer -->

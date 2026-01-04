@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZapSpy - Login VIP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Scanlines effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Login Box */
+        .login-box {
+            border: 2px solid #00ff00;
+            padding: 40px;
+            background-color: rgba(0, 255, 0, 0.02);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+        }
+
+        .login-box h1 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff00;
+            letter-spacing: 3px;
+        }
+
+        .login-box p {
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            text-shadow: 0 0 5px #00ff00;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background-color: rgba(0, 255, 0, 0.05);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+        }
+
+        .form-group input:focus {
+            background-color: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(0, 255, 0, 0.5);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00ff00;
+            color: #000000;
+            border: 2px solid #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            margin-top: 20px;
+        }
+
+        .login-button:hover {
+            background-color: #00ff88;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+        }
+
+        .login-button:active {
+            transform: scale(0.98);
+        }
+
+        .login-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .loading-screen.show {
+            display: flex;
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px #00ff00;
+            letter-spacing: 2px;
+        }
+
+        .progress-container {
+            width: 300px;
+            height: 30px;
+            border: 2px solid #00ff00;
+            background-color: rgba(0, 255, 0, 0.05);
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #00ff88);
+            width: 0%;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .progress-text {
+            font-size: 1rem;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        /* Error Screen */
+        .error-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .error-screen.show {
+            display: flex;
+        }
+
+        .error-box {
+            border: 2px solid #ff0000;
+            padding: 40px;
+            background-color: rgba(255, 0, 0, 0.05);
+            max-width: 600px;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
+        }
+
+        .error-box h2 {
+            color: #ff0000;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ff0000;
+            letter-spacing: 2px;
+        }
+
+        .error-box p {
+            color: #ff6666;
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .error-box .error-highlight {
+            color: #ff0000;
+            font-weight: bold;
+            text-shadow: 0 0 5px #ff0000;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 30px;
+            background-color: #ff0000;
+            color: #ffffff;
+            border: 2px solid #ff0000;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        }
+
+        .back-button:hover {
+            background-color: #ff3333;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .login-box {
+                padding: 30px 20px;
+            }
+
+            .login-box h1 {
+                font-size: 1.4rem;
+            }
+
+            .progress-container {
+                width: 250px;
+            }
+
+            .error-box {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-box">
+            <h1>ZAPSPY</h1>
+            <p>ACESSO VIP - LOGIN</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">EMAIL</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        placeholder="seu@email.com" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="token">TOKEN DE ACESSO</label>
+                    <input 
+                        type="password" 
+                        id="token" 
+                        placeholder="seu-token-aqui" 
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="login-button">ACESSAR SISTEMA</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-text">CONECTANDO AO SERVIDOR...</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="progress-text" id="progressText">0%</div>
+    </div>
+
+    <!-- Error Screen -->
+    <div class="error-screen" id="errorScreen">
+        <div class="error-box">
+            <h2>⚠ ERRO DE CONEXÃO</h2>
+            <p>
+                <span class="error-highlight">O ZAPSPY está tendo conflito com a API do WhatsApp</span>
+            </p>
+            <p>
+                Pedimos nossas sinceras desculpas 😔
+            </p>
+            <p>
+                Isso ocorre pois a API do WhatsApp faz mudanças de hora em hora, e infelizmente nossa integração foi impactada.
+            </p>
+            <p>
+                Nosso sistema já está fazendo as alterações necessárias e em breve retornará para você fazer sua espionagem...
+            </p>
+            <p style="margin-top: 20px; font-weight: bold;">
+                ⏱ Aguarde entre <span class="error-highlight">30 minutos a 1 hora</span> e volte jaja!
+            </p>
+            <a href="../acessoVipzap/" class="back-button">VOLTAR</a>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const errorScreen = document.getElementById('errorScreen');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const token = document.getElementById('token').value;
+
+            // Validar que não estão vazios
+            if (!email || !token) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+
+            // Mostrar tela de carregamento
+            loginForm.parentElement.style.display = 'none';
+            loadingScreen.classList.add('show');
+
+            // Simular progresso de 0 a 100%
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                
+                if (progress > 100) {
+                    progress = 100;
+                }
+
+                progressBar.style.width = progress + '%';
+                progressText.textContent = Math.floor(progress) + '%';
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    
+                    // Aguardar um pouco e depois mostrar erro
+                    setTimeout(() => {
+                        loadingScreen.classList.remove('show');
+                        errorScreen.classList.add('show');
+                    }, 1000);
+                }
+            }, 200);
+        });
+    </script>
+</body>
+</html>
