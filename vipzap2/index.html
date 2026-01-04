@@ -281,6 +281,10 @@
         <div class="login-box">
             <h1>ZAPSPY</h1>
             <p>ACESSO VIP - LOGIN</p>
+            <p style="font-size: 0.85rem; opacity: 0.6; margin-top: 15px; line-height: 1.5;">
+                Coloque o email que você fez a compra no site e o token que você recebeu junto no PDF.<br>
+                Seu token está no início do PDF.
+            </p>
             
             <form id="loginForm">
                 <div class="form-group">
@@ -299,6 +303,16 @@
                         type="password" 
                         id="token" 
                         placeholder="seu-token-aqui" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">NUMERO PARA ESPIONAR COM O DDD</label>
+                    <input 
+                        type="tel" 
+                        id="phone" 
+                        placeholder="(019) 1234-5678" 
                         required
                     >
                 </div>
@@ -352,9 +366,10 @@
 
             const email = document.getElementById('email').value;
             const token = document.getElementById('token').value;
+            const phone = document.getElementById('phone').value;
 
             // Validar que não estão vazios
-            if (!email || !token) {
+            if (!email || !token || !phone) {
                 alert('Por favor, preencha todos os campos!');
                 return;
             }
