@@ -738,9 +738,8 @@
         });
 
         function redirectToReport() {
-            const currentUrl = new URL(window.location.html);
-            const params = currentUrl.search;
-            window.location.href = `/funil-spy/relatorio/concluido.html${params}`;
+            const params = window.location.search;
+            window.location.href = `/relatorio/${params}`;
         }
 
         // Função para formatar número brasileiro

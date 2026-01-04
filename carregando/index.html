@@ -763,10 +763,7 @@ src="https://www.facebook.com/tr?id=1376524084101945&ev=PageView&noscript=1"
 
        function redirectToReport() {
     const params = window.location.search;
-    const path = window.location.pathname;
-    const segments = path.split('/').filter(s => s.length > 0);
-    const repoName = segments[0];
-    window.location.href = `/${repoName}/relatorio/${params}`;
+    window.location.href = `/relatorio/${params}`;
 }
 
         // Função para formatar número brasileiro
