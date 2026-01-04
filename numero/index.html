@@ -475,7 +475,7 @@ src="https://www.facebook.com/tr?id=1376524084101945&ev=PageView&noscript=1"
 
                     // Cria o link de destino (ajuste se a pasta mudar)
                     // Como você configurou a raiz como /funil-zapspy, use /carregando/
-                    const redirectUrl = new URL('/carregando/', currentUrl.origin);
+                    const redirectUrl = new URL('../carregando/', currentUrl.href);
 
                     // Transfere os UTMs (source, medium, campaign, etc)
                     params.forEach((value, key) => {
